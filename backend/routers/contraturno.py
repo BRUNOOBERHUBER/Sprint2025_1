@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from pydantic import BaseModel
 from typing import List, Optional
 from backend.schemas import ContraturnoCreate, ContraturnoDB, ContraturnoUpdate
 from backend.database import get_db
@@ -10,6 +11,8 @@ router = APIRouter(prefix="/contraturno", tags=["contraturno"], dependencies=[De
 
 COLLECTION = "contraturno"
 
+class Inscricao(BaseModel):
+    alunoId: str
 
 def contraturno_helper(doc: dict) -> ContraturnoDB:
     doc["_id"] = str(doc["_id"])
@@ -55,4 +58,39 @@ async def atualizar_contraturno(id: str, updates: ContraturnoUpdate, db: AsyncIO
 async def deletar_contraturno(id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
     res = await db[COLLECTION].delete_one({"_id": ObjectId(id)})
     if res.deleted_count == 0:
-        raise HTTPException(status_code=404, detail="Projeto de Contraturno não encontrado") 
+        raise HTTPException(status_code=404, detail="Projeto de Contraturno não encontrado")
+    return
+
+
+@router.post("/{id}/inscrever", response_model=ContraturnoDB)
+async def inscrever_aluno(
+    id: str,
+    inscricao: Inscricao,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    # Adiciona alunoId ao array, sem duplicar
+    await db[COLLECTION].update_one(
+        {"_id": ObjectId(id)},
+        {"$addToSet": {"alunosInscritos": inscricao.alunoId}},
+    )
+    doc = await db[COLLECTION].find_one({"_id": ObjectId(id)})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Projeto de Contraturno não encontrado")
+    return contraturno_helper(doc)
+
+
+@router.delete("/{id}/inscrever/{aluno_id}", response_model=ContraturnoDB)
+async def remover_inscricao(
+    id: str,
+    aluno_id: str,
+    db: AsyncIOMotorDatabase = Depends(get_db)
+):
+    # Remove alunoId do array
+    await db[COLLECTION].update_one(
+        {"_id": ObjectId(id)},
+        {"$pull": {"alunosInscritos": aluno_id}},
+    )
+    doc = await db[COLLECTION].find_one({"_id": ObjectId(id)})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Projeto de Contraturno não encontrado")
+    return contraturno_helper(doc) 
