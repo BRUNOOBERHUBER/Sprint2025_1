@@ -1,0 +1,143 @@
+===============================================================================
+ PROJECT TRACKER – PORTFÓLIO ESCOLAR DIGITAL  |  EMEF GONZAGUINHA  |  v1.1
+===============================================================================
+Formato  .TXT • Última atualização: 27-mai-2025
+Legenda Status: TODO | DOING | BLOCKED | REVIEW | DONE
+-------------------------------------------------------------------------------
+
+╔════════════════════════════════  A. EPICS  ═════════════════════════════════╗
+| E1 Autenticação & Usuário Único
+| E2 CRUD Colaboradores e Alunos
+| E3 Portfólio Acadêmico (Boletim, Frequência)
+| E4 Intervenções (Atendimentos, Encaminhamentos, Contraturno)
+| E5 Upload & Documentos
+| E6 Dashboard Analítico
+| E7 Relatório PDF (WeasyPrint)
+| E8 Infra / DevOps / Testes
+| E9 Bônus (Notificações, Multiusuário)            ← *fora do MVP*
+
+╚═════════════════════════════════════════════════════════════════════════════╝
+
+
+
+╔══════════════════════════════  B. SPRINT BOARD  ════════════════════════════╗
+
+SPRINT 1 – "Kick-off" (27-mai → 09-jun)  *Objetivo:* Autenticação + CRUD base
+------------------------------------------------------------------------------
+ID  | Task                                   | Epic | Assignee | Status
+----+----------------------------------------+------+----------+--------
+T1  | Repositórios FE/BE criados (GitHub)    | E8   | DevOps   | DONE
+T2  | Setup Vite + Tailwind + theme          | E8   | FE       | DONE
+T3  | Setup Flask + Poetry + Dockerfile      | E8   | BE       | DONE
+T4  | Modelo Mongo: users, colaboradores     | E2   | BE       | DONE
+T5  | Rota /api/login (token simples)        | E1   | BE       | DONE
+T6  | Tela Login + guardas de rota           | E1   | FE       | DONE
+T7  | CRUD /api/colaboradores                | E2   | BE       | DONE
+T8  | UI Colaboradores (tabela/modal)        | E2   | FE       | DONE
+----+----------------------------------------+------+----------+--------
+BURNDOWN  : 8 tasks · 8 concluídas · 100 %
+
+
+SPRINT 2 – "Acadêmico" (10-jun → 23-jun)  *Objetivo:* Boletim, Frequência, Upload
+------------------------------------------------------------------------------
+ID  | Task                                   | Epic | Assignee | Status
+----+----------------------------------------+------+----------+--------
+T9  | Coleções boletins + frequencias        | E3   | BE       | TODO
+T10 | Endpoints boletins/frequencias CRUD    | E3   | BE       | TODO
+T11 | GridFS config + /api/upload            | E5   | BE       | TODO
+T12 | Tabela Alunos + filtros (nome, tag)    | E2   | FE       | DONE
+T13 | Aba Boletim (form RHF + tabela)        | E3   | FE       | DONE
+T14 | Aba Frequência (gráfico linha)         | E3   | FE       | TODO
+T15 | Upload component (dropzone)            | E5   | FE       | TODO
+----+----------------------------------------+------+----------+--------
+BURNDOWN  : 7 tasks
+
+
+SPRINT 3 – "Intervenções" (24-jun → 07-jul)  *Objetivo:* Atendimentos + Encaminhamentos
+------------------------------------------------------------------------------
+ID  | Task                                   | Epic | Assignee | Status
+----+----------------------------------------+------+----------+--------
+T16 | Coleções atendimentos/encaminhamentos  | E4   | BE       | TODO
+T17 | CRUD endpoints atend/encam             | E4   | BE       | TODO
+T18 | Aba Atendimentos (timeline + modal)    | E4   | FE       | TODO
+T19 | Aba Encaminhamentos (kanban status)    | E4   | FE       | TODO
+T20 | Atrelamento a colaborador responsável  | E4   | BE/FE    | TODO
+----+----------------------------------------+------+----------+--------
+BURNDOWN  : 5 tasks
+
+
+SPRINT 4 – "Contraturno & Dash" (08-jul → 21-jul)
+------------------------------------------------------------------------------
+ID  | Task                                   | Epic | Assignee | Status
+----+----------------------------------------+------+----------+--------
+T21 | Coleção projetosContraturno            | E4   | BE       | TODO
+T22 | Endpoints + inscrição de alunos        | E4   | BE       | TODO
+T23 | UI Contraturno com responsável         | E4   | FE       | DONE
+T24 | Endpoint /dashboard/stats              | E6   | BE       | DONE
+T25 | Gráficos ChartJS (freq, notas, tags)   | E6   | FE       | DONE
+----+----------------------------------------+------+----------+--------
+BURNDOWN  : 5 tasks · 3 concluídas · 60 %
+
+
+SPRINT 5 – "PDF & Polimento" (22-jul → 04-ago)
+------------------------------------------------------------------------------
+ID  | Task                                   | Epic | Assignee | Status
+----+----------------------------------------+------+----------+--------
+T26 | Template HTML WeasyPrint               | E7   | BE       | TODO
+T27 | /export?format=pdf endpoint            | E7   | BE       | TODO
+T28 | Botão Exportar PDF/JSON no FE          | E7   | FE       | TODO
+T29 | E2E tests Vitest/Pytest smoke          | E8   | QA       | TODO
+T30 | Hardening Docker + CI pipeline         | E8   | DevOps   | TODO
+----+----------------------------------------+------+----------+--------
+BURNDOWN  : 5 tasks
+
+
+SPRINT 6 – "Buffer & Bonus" (05-ago → 18-ago)
+------------------------------------------------------------------------------
+• Uso para ajustes, correções e, se houver tempo, tarefas bônus:  
+  - Notificações (US-B1)  
+  - Multiusuário (US-B2)
+
+-------------------------------------------------------------------------------
+
+╔═════════════════════════════  C. MILESTONES  ═══════════════════════════════╗
+| MS1  09-jun  MVP Core 1   → Login + Colaboradores CRUD funcionando          |
+| MS2  23-jun  MVP Core 2   → Acadêmico (Boletim, Frequência, Upload)         |
+| MS3  07-jul  MVP Core 3   → Intervenções (Atend, Encaminhamentos)           |
+| MS4  21-jul  MVP Core 4   → Contraturno + Dashboard OK                      |
+| MS5  04-ago  MVP Freeze   → PDF export + Testes -> Release Candidate        |
+╚═════════════════════════════════════════════════════════════════════════════╝
+
+
+
+╔═════════════════════════════  D. RISK LOG  ════════════════════════════════╗
+| R1  Dependências do WeasyPrint em prod            | MED | docker image w/ libs |
+| R2  Escopo bonus invadir MVP                      | HIGH| lock sprint 6 only   |
+| R3  Atlas quota superar (free tier)               | LOW | monitor & prune      |
+| R4  Internet instável escola                      | MED | cache & export PDF   |
+╚═════════════════════════════════════════════════════════════════════════════╝
+
+
+
+╔══════════════════════════  E. DECISION REGISTER  ═══════════════════════════╗
+| D1  Token simples → JWT futuramente (v2).               | 26-mai-25 |
+| D2  WeasyPrint escolhido p/ PDF, não wkhtmltopdf.        | 26-mai-25 |
+| D3  ChartJS adotado em vez de Recharts.                  | 26-mai-25 |
+╚═════════════════════════════════════════════════════════════════════════════╝
+
+
+
+╔═══════════════════════════════  F. TEAM  ══════════════════════════════════╗
+| Função             | Nome      | Contato              |
+|--------------------|-----------|----------------------|
+| Product Owner      | Diretora  | diretora@gzg.edu.br  |
+| Tech Lead (BE)     | Bruno     | ——                   |
+| Tech Lead (FE)     | ——        | ——                   |
+| DevOps / QA        | ——        | ——                   |
+╚═════════════════════════════════════════════════════════════════════════════╝
+
+
+
+===============================================================================
+            •••  FIM DO PROJECT TRACKER  •••
+===============================================================================

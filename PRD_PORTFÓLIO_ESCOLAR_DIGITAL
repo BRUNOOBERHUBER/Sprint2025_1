@@ -1,0 +1,197 @@
+=====================================================================
+ PRD – PORTFÓLIO ESCOLAR DIGITAL • EMEF GONZAGUINHA • v1.2  (MVP+)
+=====================================================================
+
+1. VISÃO GERAL
+──────────────
+• Problema   : SGP armazena SÓ frequência + médias finais; não cobre saúde,
+               família, contraturno, encaminhamentos, etc.
+• Solução    : Web-app React (JS) + Flask (Python) + MongoDB Atlas.
+• Usuário    : Diretoria / Coordenação / Professores (login único, admin).
+
+2. OBJETIVOS & MÉTRICAS
+───────────────────────
+| Objetivo                                          | Indicador-Meta          |
+|---------------------------------------------------|-------------------------|
+| Centralizar docs dos alunos monitorados           | ≥ 95 % em 30 dias       |
+| Busca de info para reuniões                       | 20 min → < 3 min        |
+| Lançamentos bimestrais sem planilhas              | 4 ciclos/semestre       |
+| Exportar portfólio PDF + JSON em 1 clique         | 100 % OK               |
+| Dash analítico (freq./notas/intervenções)         | 3 gráficos funcionais   |
+
+3. USER STORIES (prioridade MVP+)
+────────────────────────────────
+US-01 Login único.  
+US-02 Acompanhar alunos com dificuldades.  
+US-03 Digitalizar docs/alunos.  
+US-04 Registrar desempenho bimestral.  
+US-05 Registrar diagnósticos.  
+US-06 Buscar aluno por nome/RA.  
+US-07 Registrar projetos contraturno.  
+US-08 Gerar / armazenar relatórios PDF/JSON.  
+US-09 Guardar info adicional (saúde, família…).  
+US-10 Catalogar encaminhamentos a redes de proteção.  
+US-11 Cadastrar colaboradores (cargo, contato).  
+US-12 Visualizar dashboard analítico.  
+
+★  BÔNUS  
+US-B1 Notificar responsáveis (e-mail/WhatsApp).  
+US-B2 Multiusuário + permissões.
+
+4. IDENTIDADE VISUAL
+────────────────────
+primary-dk #063970 | primary #1e81b0 | accent #76b5c5  
+secondary #abdbe3  | background #eeeee4  
+
+5. MODELO DE DADOS – MongoDB  (DB: EMEF)
+─────────────────────────────────────────
+LEG.: (*) obrigatório | (-) opcional  
+
+╭────────────────────────────────────────────────────────────────────╮
+│ 5.1  colaboradores                                                │
+│ _id*, nome*, cargoFuncao*, email*, celular*, criadoEm*            │
+╰────────────────────────────────────────────────────────────────────╯
+
+╭────────────────────────────────────────────────────────────────────╮
+│ 5.2  alunos                                                      │
+│ _id*, nome*, sobrenome*, dataNascimento*, anoEscolar*,            │
+│ matricula*, ra*, cpf*, contatosResponsaveis*[{nome*, fone*,       │
+│ email*}], tagsAtencao*[], fotoAlunoId-, dadosPessoais-{},         │
+│ criadoEm*, atualizadoEm*                                          │
+╰────────────────────────────────────────────────────────────────────╯
+
+╭───────────────────────────────────╮  ╭───────────────────────────────────╮
+│ 5.3  boletins                     │  │ 5.4  frequencias                 │
+│ alunoId*, ano*, periodo*,         │  │ alunoId*, ano*, totalAulas*,      │
+│ disciplinas*[{nome*, nota*}],     │  │ faltas*, percentPresenca*,        │
+│ mediaGeral(calc), criadoEm*       │  │ criadoEm*                         │
+╰───────────────────────────────────╯  ╰───────────────────────────────────╯
+
+╭───────────────────────────────────╮  ╭───────────────────────────────────╮
+│ 5.5  saudeDeficiencias            │  │ 5.6  atendimentos                │
+│ alunoId*, tipo*, descricao*,      │  │ alunoId*, titulo*, data*, motivo*│
+│ dataLaudo-, documentosIds-[],     │  │ resultado*, responsavelColabId*,  │
+│ criadoEm*                         │  │ documentoId-, criadoEm*           │
+╰───────────────────────────────────╯  ╰───────────────────────────────────╯
+
+╭───────────────────────────────────╮
+│ 5.7  projetosContraturno          │
+│ titulo*, descricao*, dataInicio*, │
+│ dataFim-, responsavelColabId*,    │
+│ alunosInscritos*[], criadoEm*     │
+╰───────────────────────────────────╯
+
+╭───────────────────────────────────╮  ╭───────────────────────────────────╮
+│ 5.8  atividades                  │  │ 5.9  hipoteseEscrita             │
+│ alunoId*, data*, descricao*,      │  │ alunoId*, data*, nivel*,          │
+│ categoria-, evidenciasIds-[],     │  │ obs-, criadoEm*                   │
+│ criadoEm*                         │  ╰───────────────────────────────────╯
+╰───────────────────────────────────╯
+
+╭───────────────────────────────────╮  ╭───────────────────────────────────╮
+│ 5.10 diagnosticos                │  │ 5.11 compensacoesAusencia         │
+│ alunoId*, ano*, portugues{},      │  │ alunoId*, dataAtividade*,         │
+│ matematica{}, documentoId-,       │  │ realizada*, descricao-,            │
+│ criadoEm*                         │  │ responsavel-, criadoEm*            │
+╰───────────────────────────────────╯  ╰───────────────────────────────────╯
+
+╭───────────────────────────────────╮
+│ 5.12 encaminhamentos (*NOVO*)     │
+│ alunoId*, data*, destino*, motivo*,│
+│ status*, resultado-, followUpDate-,│
+│ documentoId-, criadoEm*           │
+╰───────────────────────────────────╯
+
+╭───────────────────────────────────╮  ╭───────────────────────────────────╮
+│ 5.13 relacionamentoColegas       │  │ 5.14 avaliacoesExternas           │
+│ alunoId*, data*, observacao*,     │  │ alunoId*, nome*, data*,           │
+│ classificacao*, criadoEm*         │  │ resultado*, documentoId-,         │
+╰───────────────────────────────────╯  ╰───────────────────────────────────╯
+
+╭──────────────────────────╮
+│ 5.15 users (login único) │
+│ username*, password*     │
+╰──────────────────────────╯
+
+6. API REST – Endpoints
+───────────────────────
+AUTH
+  POST   /api/login
+
+COLABORADORES
+  GET/POST         /api/colaboradores
+  GET/PUT/DELETE   /api/colaboradores/<id>
+
+ALUNOS
+  GET/POST         /api/alunos
+  GET/PUT/DELETE   /api/alunos/<id>
+
+SUB-RECURSOS (CRUD)
+  /api/alunos/<id>/boletins
+  /api/alunos/<id>/frequencias
+  /api/alunos/<id>/saude
+  /api/alunos/<id>/atendimentos
+  /api/alunos/<id>/encaminhamentos
+  /api/alunos/<id>/atividades
+  /api/alunos/<id>/hipotese
+  /api/alunos/<id>/diagnosticos
+  /api/alunos/<id>/compensacoes
+  /api/alunos/<id>/contraturno
+  /api/alunos/<id>/relacionamentos
+  /api/alunos/<id>/avaliacoes
+
+CONTRATURNO
+  GET/POST         /api/contraturnos
+  GET/PUT/DELETE   /api/contraturnos/<id>
+  POST             /api/contraturnos/<id>/inscrever {alunoId}
+
+UPLOAD
+  POST  /api/upload      – GridFS
+
+EXPORT & DASHBOARD
+  GET   /api/alunos/<id>/export            → JSON + PDF (WeasyPrint)
+  GET   /api/dashboard/stats               → dados para gráficos
+
+★  BÔNUS
+  POST  /api/notificar/<alunoId>           → e-mail/WhatsApp
+
+7. RELATÓRIO PDF (WeasyPrint)
+─────────────────────────────
+• Template HTML/CSS institucional.  
+• Seções: Dados Gerais | Gráficos (freq./notas) | Atendimentos |  
+  Encaminhamentos | Contraturno.  
+• Gerado server-side; endpoint `/export?format=pdf`.
+
+8. DASHBOARD ANALÍTICO
+──────────────────────
+• Gráfico 1: Frequência (%) por bimestre.  
+• Gráfico 2: Média de notas vs. número de intervenções.  
+• Gráfico 3: Distribuição de tags de atenção.  
+• React-chartjs-2; dados via `/dashboard/stats`.
+
+9. FLUXO DE TELAS (front-end)
+─────────────────────────────
+LOGIN → DASHBOARD (cards + gráficos) → ALUNOS → Detalhe Tabs  
+→ Contraturno (com responsável) → Atendimentos (responsável)  
+→ Encaminhamentos → Colaboradores (CRUD) → Export PDF/JSON.
+
+10. ROADMAP (12 semanas)
+────────────────────────
+S1  Setup + Login + CRUD Colaboradores & Alunos  
+S2  Boletim + Frequência + Upload  
+S3  Atendimentos (com responsável) + Encaminhamentos  
+S4  Contraturno (com responsável) + Dashboard API  
+S5  Relatório PDF + Front gráficos  
+S6  Testes + Hardening + Optional bonus se tempo
+
+11. RISCOS & MITIGAÇÕES
+───────────────────────
+| Risco                                   | Mitigação                       |
+|-----------------------------------------|---------------------------------|
+| Escopo extra (PDF + Dashboard)          | Buffer sprint 5-6; priorizar    |
+| WeasyPrint dependências (libffi/pango)  | Dockerizar imagem do backend    |
+| Internet instável na escola             | Considerar cache/PWA em fase 2  |
+
+=====================================================================
+                                PRD
+=====================================================================
