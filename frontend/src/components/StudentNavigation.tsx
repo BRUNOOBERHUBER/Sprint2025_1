@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { cn } from "@/lib/utils";
 import { User, FileText, Calendar, Heart, MessageCircle, Clock } from "lucide-react";
 
@@ -9,7 +9,7 @@ interface NavigationItem {
 }
 
 const navigationItems: NavigationItem[] = [
-  { id: "dados", label: "Dados", icon: <User className="w-4 h-4" /> },
+  { id: "dados-gerais", label: "Dados", icon: <User className="w-4 h-4" /> },
   { id: "boletins", label: "Boletins", icon: <FileText className="w-4 h-4" /> },
   { id: "frequencia", label: "Frequência", icon: <Calendar className="w-4 h-4" /> },
   { id: "saude", label: "Saúde", icon: <Heart className="w-4 h-4" /> },
@@ -22,11 +22,8 @@ interface StudentNavigationProps {
   onTabChange?: (tabId: string) => void;
 }
 
-export default function StudentNavigation({ activeTab = "dados", onTabChange }: StudentNavigationProps) {
-  const [currentTab, setCurrentTab] = useState(activeTab);
-
+export function StudentNavigation({ activeTab = "dados-gerais", onTabChange }: StudentNavigationProps) {
   const handleTabClick = (tabId: string) => {
-    setCurrentTab(tabId);
     onTabChange?.(tabId);
   };
 
@@ -39,7 +36,7 @@ export default function StudentNavigation({ activeTab = "dados", onTabChange }: 
             onClick={() => handleTabClick(item.id)}
             className={cn(
               "relative flex items-center gap-2 px-4 py-2 text-sm font-medium whitespace-nowrap transition-all duration-200 border-b-2",
-              currentTab === item.id
+              activeTab === item.id
                 ? "text-primary border-primary"
                 : "text-primary-dark border-transparent hover:text-primary hover:border-primary/50"
             )}
@@ -47,7 +44,7 @@ export default function StudentNavigation({ activeTab = "dados", onTabChange }: 
             <span
               className={cn(
                 "transition-colors duration-200",
-                currentTab === item.id ? "text-primary" : "text-gray-400"
+                activeTab === item.id ? "text-primary" : "text-gray-400"
               )}
             >
               {item.icon}
@@ -58,4 +55,6 @@ export default function StudentNavigation({ activeTab = "dados", onTabChange }: 
       </div>
     </div>
   );
-} 
+}
+
+export default StudentNavigation; 

@@ -47,4 +47,14 @@ export async function updateContraturno(id: string, updates: ContraturnoUpdate) 
 
 export async function deleteContraturno(id: string) {
   await api.delete(`/contraturno/${id}`);
+}
+
+export async function inscreverAluno(contraturnoId: string, alunoId: string) {
+  const { data } = await api.post<Contraturno>(`/contraturno/${contraturnoId}/inscrever`, { alunoId });
+  return data;
+}
+
+export async function removerInscricao(contraturnoId: string, alunoId: string) {
+  const { data } = await api.delete<Contraturno>(`/contraturno/${contraturnoId}/inscrever/${alunoId}`);
+  return data;
 } 

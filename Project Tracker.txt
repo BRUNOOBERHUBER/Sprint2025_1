@@ -71,12 +71,12 @@ SPRINT 4 – "Contraturno & Dash" (08-jul → 21-jul)  *Objetivo:* Atendimentos 
 ID  | Task                                   | Epic | Assignee | Status
 ----+----------------------------------------+------+----------+--------
 T21 | Coleção projetosContraturno            | E4   | BE       | DONE
-T22 | Endpoints + inscrição de alunos        | E4   | BE       | TODO
+T22 | Endpoints + inscrição de alunos        | E4   | BE       | DONE
 T23 | UI Contraturno com responsável         | E4   | FE       | DONE
 T24 | Endpoint /dashboard/stats              | E6   | BE       | DONE
 T25 | Gráficos ChartJS (freq, notas, tags)   | E6   | FE       | DONE
 ----+----------------------------------------+------+----------+--------
-BURNDOWN  : 5 tasks · 4 concluídas · 80 %
+BURNDOWN  : 5 tasks · 5 concluídas · 100 %
 
 
 SPRINT 5 – "PDF & Polimento" (22-jul → 04-ago)

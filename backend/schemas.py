@@ -167,4 +167,63 @@ class ColaboradorDB(ColaboradorBase):
 
     class Config:
         populate_by_name = True
+        orm_mode = True
+
+
+class FrequenciaCreate(BaseModel):
+    ano: int
+    totalAulas: int
+    faltas: int
+    percentPresenca: float
+
+
+class FrequenciaDB(FrequenciaCreate):
+    id: str = Field(alias="_id")
+    alunoId: str
+
+    class Config:
+        populate_by_name = True
+        orm_mode = True
+
+
+class SaudeCreate(BaseModel):
+    tipo: str
+    descricao: str
+    dataLaudo: Optional[date] = None
+    documentosIds: Optional[List[str]] = None
+
+
+class SaudeDB(SaudeCreate):
+    id: str = Field(alias="_id")
+    alunoId: str
+
+    class Config:
+        populate_by_name = True
+        orm_mode = True
+
+
+class AtendimentoCreate(BaseModel):
+    titulo: str
+    data: date
+    motivo: str
+    resultado: Optional[str] = None
+    responsavelColabId: str
+    documentoId: Optional[str] = None
+
+
+class AtendimentoUpdate(BaseModel):
+    titulo: Optional[str] = None
+    data: Optional[date] = None
+    motivo: Optional[str] = None
+    resultado: Optional[str] = None
+    responsavelColabId: Optional[str] = None
+    documentoId: Optional[str] = None
+
+
+class AtendimentoDB(AtendimentoCreate):
+    id: str = Field(alias="_id")
+    alunoId: str
+
+    class Config:
+        populate_by_name = True
         orm_mode = True 
