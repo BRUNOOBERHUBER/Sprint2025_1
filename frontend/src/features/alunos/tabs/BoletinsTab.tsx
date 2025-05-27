@@ -90,7 +90,7 @@ export default function BoletinsTab() {
       <div className="flex justify-between items-center">
         <CardTitle className="text-xl">Boletins</CardTitle>
         <Button onClick={openNew} className="bg-primary hover:bg-primary/90 text-white">
-          Adicionar Boletim
+        Adicionar Boletim
         </Button>
       </div>
       <Card className="border-secondary">
@@ -98,8 +98,8 @@ export default function BoletinsTab() {
           <CardTitle>Lista de Boletins</CardTitle>
         </CardHeader>
         <CardContent>
-          {isLoading ? (
-            <p>Carregando...</p>
+      {isLoading ? (
+        <p>Carregando...</p>
           ) : boletins.length > 0 ? (
             <Table>
               <TableHeader>
@@ -125,12 +125,12 @@ export default function BoletinsTab() {
                       </Button>
                     </TableCell>
                   </TableRow>
-                ))}
+          ))}
               </TableBody>
             </Table>
           ) : (
             <p>Nenhum boletim cadastrado.</p>
-          )}
+      )}
         </CardContent>
       </Card>
 

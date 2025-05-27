@@ -1,12 +1,15 @@
-import { useParams, NavLink, Routes, Route, Navigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation, Routes, Route, Navigate } from "react-router-dom";
 import DadosGeraisTab from "./tabs/DadosGeraisTab";
 import BoletinsTab from "./tabs/BoletinsTab";
 import FrequenciaTab from "./tabs/FrequenciaTab";
 // Stubs para outras abas
 import PlaceholderTab from "./tabs/PlaceholderTab";
+import StudentNavigation from "../../components/StudentNavigation";
 
 export default function AlunoDetailPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   if (!id) {
     return <div>Id inválido</div>;
@@ -22,20 +25,13 @@ export default function AlunoDetailPage() {
     { path: "projetos", label: "Contraturno", element: <PlaceholderTab nome="Contraturno" /> },
   ];
 
+  const currentTab = location.pathname.split("/").pop() || "dados";
+  const handleTabChange = (tab: string) => navigate(tab);
+
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Aluno {id}</h1>
-      <nav className="flex gap-4 mb-4 border-b pb-2">
-        {tabs.map((t) => (
-          <NavLink
-            key={t.path}
-            to={t.path}
-            className={({ isActive }) => (isActive ? "font-bold text-primary" : "")}
-          >
-            {t.label}
-          </NavLink>
-        ))}
-      </nav>
+      <StudentNavigation activeTab={currentTab} onTabChange={handleTabChange} />
       <Routes>
         <Route index element={<Navigate to="dados" />} />
         {tabs.map((t) => (

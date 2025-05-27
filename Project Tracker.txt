@@ -66,17 +66,17 @@ T20 | Atrelamento a colaborador responsável  | E4   | BE/FE    | TODO
 BURNDOWN  : 5 tasks
 
 
-SPRINT 4 – "Contraturno & Dash" (08-jul → 21-jul)
+SPRINT 4 – "Contraturno & Dash" (08-jul → 21-jul)  *Objetivo:* Atendimentos + Dashboard API
 ------------------------------------------------------------------------------
 ID  | Task                                   | Epic | Assignee | Status
 ----+----------------------------------------+------+----------+--------
-T21 | Coleção projetosContraturno            | E4   | BE       | TODO
+T21 | Coleção projetosContraturno            | E4   | BE       | DONE
 T22 | Endpoints + inscrição de alunos        | E4   | BE       | TODO
 T23 | UI Contraturno com responsável         | E4   | FE       | DONE
 T24 | Endpoint /dashboard/stats              | E6   | BE       | DONE
 T25 | Gráficos ChartJS (freq, notas, tags)   | E6   | FE       | DONE
 ----+----------------------------------------+------+----------+--------
-BURNDOWN  : 5 tasks · 3 concluídas · 60 %
+BURNDOWN  : 5 tasks · 4 concluídas · 80 %
 
 
 SPRINT 5 – "PDF & Polimento" (22-jul → 04-ago)
