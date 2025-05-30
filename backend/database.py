@@ -1,4 +1,4 @@
-from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import MongoClient
 from functools import lru_cache
 import os
 
@@ -10,12 +10,12 @@ DB_NAME = os.getenv("MONGO_DB_NAME", "EMEF")
 
 
 @lru_cache(maxsize=1)
-def get_client() -> AsyncIOMotorClient:
+def get_client() -> MongoClient:
     """Retorna um único cliente MongoDB reutilizável"""
-    return AsyncIOMotorClient(MONGODB_URI)
+    return MongoClient(MONGODB_URI)
 
 
 def get_db():
     """Dependency que injeta a database do Mongo."""
     client = get_client()
-    return client[DB_NAME] 
+    return client[DB_NAME]

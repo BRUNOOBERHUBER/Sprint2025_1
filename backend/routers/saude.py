@@ -1,34 +1,56 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from flask import Blueprint, request, jsonify
 from typing import List
 from bson import ObjectId
-from backend.database import get_db
-from backend.utils import validar_token
-from motor.motor_asyncio import AsyncIOMotorDatabase
-from backend.schemas import SaudeCreate, SaudeDB
+from database import get_db
+from utils import validar_token
+from schemas import SaudeCreate, SaudeDB
 
-router = APIRouter(prefix="/alunos/{aluno_id}/saude", tags=["saude"], dependencies=[Depends(validar_token)])
-
+router = Blueprint("saude", __name__)
 COLLECTION = "saude"
 
 def saude_helper(doc: dict) -> SaudeDB:
     doc["_id"] = str(doc["_id"])
     return SaudeDB(**doc)
 
-@router.get("/", response_model=List[SaudeDB])
-async def listar_saude(aluno_id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
+@router.route("/alunos/<aluno_id>/saude", methods=["GET"])
+@validar_token
+def listar_saude(aluno_id: str):
+    db = get_db()
     cursor = db[COLLECTION].find({"alunoId": aluno_id})
-    return [saude_helper(s) async for s in cursor]
+    docs = list(cursor)
+    return jsonify([saude_helper(d).dict() for d in docs])
 
-@router.post("/", response_model=SaudeDB, status_code=status.HTTP_201_CREATED)
-async def criar_saude(aluno_id: str, payload: SaudeCreate, db: AsyncIOMotorDatabase = Depends(get_db)):
-    data = payload.dict()
-    data["alunoId"] = aluno_id
-    res = await db[COLLECTION].insert_one(data)
-    novo = await db[COLLECTION].find_one({"_id": res.inserted_id})
-    return saude_helper(novo)
+@router.route("/alunos/<aluno_id>/saude", methods=["POST"])
+@validar_token
+def criar_saude(aluno_id: str):
+    data = request.get_json()
+    saude = SaudeCreate(**data)
+    saude.alunoId = aluno_id
+    db = get_db()
+    result = db[COLLECTION].insert_one(saude.dict())
+    novo = db[COLLECTION].find_one({"_id": result.inserted_id})
+    return jsonify(saude_helper(novo).dict()), 201
 
-@router.delete("/{saude_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def deletar_saude(aluno_id: str, saude_id: str, db: AsyncIOMotorDatabase = Depends(get_db)):
-    res = await db[COLLECTION].delete_one({"_id": ObjectId(saude_id), "alunoId": aluno_id})
-    if res.deleted_count == 0:
-        raise HTTPException(status_code=404, detail="Registro saúde não encontrado") 
+@router.route("/alunos/<aluno_id>/saude/<saude_id>", methods=["GET"])
+@validar_token
+def get_saude(aluno_id: str, saude_id: str):
+    db = get_db()
+    saude = db[COLLECTION].find_one({
+        "_id": ObjectId(saude_id),
+        "alunoId": aluno_id
+    })
+    if not saude:
+        return jsonify({"detail": "Registro de saúde não encontrado"}), 404
+    return jsonify(saude_helper(saude).dict())
+
+@router.route("/alunos/<aluno_id>/saude/<saude_id>", methods=["DELETE"])
+@validar_token
+def deletar_saude(aluno_id: str, saude_id: str):
+    db = get_db()
+    result = db[COLLECTION].delete_one({
+        "_id": ObjectId(saude_id),
+        "alunoId": aluno_id
+    })
+    if result.deleted_count == 0:
+        return jsonify({"detail": "Registro de saúde não encontrado"}), 404
+    return "", 204 

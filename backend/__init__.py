@@ -1,1 +1,1 @@
- 
+# Este arquivo é necessário para que o Python reconheça a pasta backend como um pacote 
