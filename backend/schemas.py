@@ -17,7 +17,7 @@ class DadosPessoais(BaseModel):
 class AlunoBase(BaseModel):
     nome: str
     sobrenome: str
-    dataNascimento: date
+    dataNascimento: datetime
     anoEscolar: str  # ex.: "5º Ano"
     endereco: str
     contatosResponsaveis: List[ContatoResponsavel] = Field(default_factory=list)
@@ -30,13 +30,13 @@ class AlunoBase(BaseModel):
 
 
 class AlunoCreate(AlunoBase):
-    dataNascimento: date
+    dataNascimento: datetime
 
 
 class AlunoUpdate(BaseModel):
     nome: Optional[str] = None
     sobrenome: Optional[str] = None
-    dataNascimento: Optional[date] = None
+    dataNascimento: Optional[datetime] = None
     anoEscolar: Optional[str] = None
     endereco: Optional[str] = None
     contatosResponsaveis: Optional[List[ContatoResponsavel]] = None
@@ -59,7 +59,7 @@ class AlunoDB(AlunoBase):
 
 class LoginRequest(BaseModel):
     user: str
-    passw: str = Field(..., alias="pass")
+    passw: str
 
 
 class TokenResponse(BaseModel):
@@ -105,6 +105,12 @@ class BoletimDB(BoletimCreate):
     class Config:
         populate_by_name = True
         orm_mode = True
+
+
+class BoletimUpdate(BaseModel):
+    ano: Optional[int] = None
+    bimestre: Optional[int] = None
+    disciplinas: Optional[List[DisciplinaNota]] = None
 
 
 # Modelos para Projetos de Contraturno

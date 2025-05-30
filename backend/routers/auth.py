@@ -1,10 +1,8 @@
-from fastapi import APIRouter, HTTPException, Depends
-from fastapi import status
-from backend.schemas import LoginRequest, TokenResponse, UserCreate, UserDB
-from backend.database import get_db
-from motor.motor_asyncio import AsyncIOMotorDatabase
+from flask import Blueprint, request, jsonify
+from schemas import LoginRequest, TokenResponse, UserCreate, UserDB
+from database import get_db
 
-router = APIRouter(tags=["auth"])
+router = Blueprint("auth", __name__)
 
 # Usuário fixo (em produção usar hash e banco)
 USER_FIXO = "admin"
@@ -19,23 +17,31 @@ def user_helper(doc: dict) -> UserDB:
     return UserDB(**doc)
 
 
-@router.post("/signup", response_model=UserDB, status_code=status.HTTP_201_CREATED)
-async def signup(user: UserCreate, db: AsyncIOMotorDatabase = Depends(get_db)):
+@router.route("/signup", methods=["POST"])
+def signup():
+    data = request.get_json()
+    user = UserCreate(**data)
+    db = get_db()
+    
     # Verifica se usuário já existe
-    existente = await db[COLLECTION].find_one({"username": user.username})
+    existente = db[COLLECTION].find_one({"username": user.username})
     if existente:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Usuário já existe")
+        return jsonify({"detail": "Usuário já existe"}), 409
 
-    result = await db[COLLECTION].insert_one(user.dict())
-    novo = await db[COLLECTION].find_one({"_id": result.inserted_id})
-    return user_helper(novo)
+    result = db[COLLECTION].insert_one(user.dict())
+    novo = db[COLLECTION].find_one({"_id": result.inserted_id})
+    return jsonify(user_helper(novo).dict()), 201
 
 
-@router.post("/login", response_model=TokenResponse)
-async def login(payload: LoginRequest, db: AsyncIOMotorDatabase = Depends(get_db)):
-    user_doc = await db[COLLECTION].find_one({"username": payload.user})
+@router.route("/login", methods=["POST"])
+def login():
+    data = request.get_json()
+    payload = LoginRequest(**data)
+    db = get_db()
+    
+    user_doc = db[COLLECTION].find_one({"username": payload.user})
     if not user_doc:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário não encontrado")
+        return jsonify({"detail": "Usuário não encontrado"}), 401
     if user_doc.get("password") != payload.passw:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Senha inválida")
-    return TokenResponse(token=TOKEN_FIXO) 
+        return jsonify({"detail": "Senha inválida"}), 401
+    return jsonify(TokenResponse(token=TOKEN_FIXO).dict()) 

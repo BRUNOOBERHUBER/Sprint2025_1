@@ -1,34 +1,21 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from flask import Flask
+from flask_cors import CORS
+from routers import alunos, boletins, colaboradores, contraturno, dashboard, frequencias, saude, atendimentos, auth
 
-from backend.routers import auth, alunos, boletins, contraturno, colaboradores
-from backend.routers.dashboard import router as dashboard_router
-from backend.routers.frequencias import router as freq_router
-from backend.routers.saude import router as saude_router
-from backend.routers.atendimentos import router as at_router
+app = Flask(__name__)
+app.url_map.strict_slashes = False
+CORS(app)
 
-app = FastAPI(title="Portfólio Escolar Digital – EMEF Gonzaguinha")
+# Registra as rotas com prefixo /api
+app.register_blueprint(auth.router, url_prefix="/api/auth")
+app.register_blueprint(alunos.router, url_prefix="/api/alunos")
+app.register_blueprint(boletins.router, url_prefix="/api/boletins")
+app.register_blueprint(colaboradores.router, url_prefix="/api/colaboradores")
+app.register_blueprint(contraturno.router, url_prefix="/api/contraturno")
+app.register_blueprint(dashboard.router, url_prefix="/api/dashboard")
+app.register_blueprint(frequencias.router, url_prefix="/api/frequencias")
+app.register_blueprint(saude.router, url_prefix="/api/saude")
+app.register_blueprint(atendimentos.router, url_prefix="/api/atendimentos")
 
-# CORS simples para facilitar testes locais
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-app.include_router(auth.router, prefix="/api")
-app.include_router(alunos.router, prefix="/api")
-app.include_router(boletins.router, prefix="/api")
-app.include_router(contraturno.router, prefix="/api")
-app.include_router(colaboradores.router, prefix="/api")
-app.include_router(dashboard_router, prefix="/api")
-app.include_router(freq_router, prefix="/api")
-app.include_router(saude_router, prefix="/api")
-app.include_router(at_router, prefix="/api")
-
-
-@app.get("/", tags=["root"])
-async def root():
-    return {"msg": "API do Portfólio Escolar Digital – EMEF"} 
+if __name__ == "__main__":
+    app.run(debug=True, port=8000) 
