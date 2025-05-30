@@ -167,55 +167,58 @@ export default function AlunoListPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredStudents.map((student) => (
-                  <TableRow key={student._id} className="hover:bg-secondary/20">
-                    <TableCell>
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center">
-                          <User className="w-5 h-5 text-primary-dark" />
+                {filteredStudents.map((student) => {
+                  console.log("Mapeando aluno:", student, "ID usado para link:", student.id);
+                  return (
+                    <TableRow key={student.id || Math.random()} className="hover:bg-secondary/20">
+                      <TableCell>
+                        <div className="flex items-center space-x-3">
+                          <div className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center">
+                            <User className="w-5 h-5 text-primary-dark" />
+                          </div>
+                          <div>
+                            <p className="font-medium text-primary-dark">
+                              {student.nome} {student.sobrenome}
+                            </p>
+                            <p className="text-sm text-gray-500">{student.contatosResponsaveis[0]?.nome}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="font-medium text-primary-dark">
-                            {student.nome} {student.sobrenome}
-                          </p>
-                          <p className="text-sm text-gray-500">{student.contatosResponsaveis[0]?.nome}</p>
+                      </TableCell>
+                      <TableCell>
+                        <Badge className="bg-primary hover:bg-primary/90 text-white">{student.anoEscolar}</Badge>
+                      </TableCell>
+                      <TableCell className="font-mono text-sm">{student.matricula}</TableCell>
+                      <TableCell>{calculateAge(student.dataNascimento)} anos</TableCell>
+                      <TableCell>
+                        <div className="flex flex-wrap gap-1">
+                          {student.tagsAtencao.length > 0 ? (
+                            student.tagsAtencao.map((tag, index) => (
+                              <Badge key={index} variant="outline" className={`text-xs ${getTagColor(tag)}`}>
+                                {tag}
+                              </Badge>
+                            ))
+                          ) : (
+                            <Badge className="bg-gray-100 text-gray-800 border-gray-200">Regular</Badge>
+                          )}
                         </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge className="bg-primary hover:bg-primary/90 text-white">{student.anoEscolar}</Badge>
-                    </TableCell>
-                    <TableCell className="font-mono text-sm">{student.matricula}</TableCell>
-                    <TableCell>{calculateAge(student.dataNascimento)} anos</TableCell>
-                    <TableCell>
-                      <div className="flex flex-wrap gap-1">
-                        {student.tagsAtencao.length > 0 ? (
-                          student.tagsAtencao.map((tag, index) => (
-                            <Badge key={index} variant="outline" className={`text-xs ${getTagColor(tag)}`}>
-                              {tag}
-                            </Badge>
-                          ))
-                        ) : (
-                          <Badge className="bg-gray-100 text-gray-800 border-gray-200">Regular</Badge>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end space-x-3">
-                        <Link to={`/alunos/${student._id}`}>
-                          <Eye className="w-4 h-4 text-gray-600 hover:text-gray-800" />
-                        </Link>
-                        <Link to={`/alunos/${student._id}`} state={{ edit: true }}>
-                          <Edit className="w-4 h-4 text-gray-600 hover:text-gray-800" />
-                        </Link>
-                        <AlertTriangle
-                          className="w-4 h-4 text-gray-600 cursor-pointer hover:text-gray-800"
-                          onClick={() => setStudentToDelete(student)}
-                        />
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end space-x-3">
+                          <Link to={`/alunos/${student.id}`}>
+                            <Eye className="w-4 h-4 text-gray-600 hover:text-gray-800" />
+                          </Link>
+                          <Link to={`/alunos/${student.id}`} state={{ edit: true }}>
+                            <Edit className="w-4 h-4 text-gray-600 hover:text-gray-800" />
+                          </Link>
+                          <AlertTriangle
+                            className="w-4 h-4 text-gray-600 cursor-pointer hover:text-gray-800"
+                            onClick={() => setStudentToDelete(student)}
+                          />
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </div>
@@ -244,7 +247,7 @@ export default function AlunoListPage() {
               </button>
               <button
                 className="px-4 py-2 bg-red-600 text-white rounded disabled:opacity-50"
-                onClick={() => deleteMutation.mutate(studentToDelete._id)}
+                onClick={() => deleteMutation.mutate(studentToDelete.id)}
                 disabled={deleteConfirmationText !== `${studentToDelete.nome} ${studentToDelete.sobrenome}`}
               >
                 Excluir

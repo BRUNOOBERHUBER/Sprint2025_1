@@ -4,7 +4,12 @@ from routers import alunos, boletins, colaboradores, contraturno, dashboard, fre
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
-CORS(app)
+CORS(
+    app,
+    resources={r"/api/*": {"origins": "http://localhost:5173"}},
+    allow_headers=["*"],
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+)
 
 # Registra as rotas com prefixo /api
 app.register_blueprint(auth.router, url_prefix="/api/auth")

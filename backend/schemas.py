@@ -169,7 +169,7 @@ class ColaboradorUpdate(BaseModel):
 
 class ColaboradorDB(ColaboradorBase):
     id: str = Field(alias="_id")
-    criadoEm: datetime
+    criadoEm: Optional[datetime] = None
 
     class Config:
         populate_by_name = True
