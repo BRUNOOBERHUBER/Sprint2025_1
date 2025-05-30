@@ -167,7 +167,7 @@ export default function ContraturnoProjetos() {
               </TableHeader>
               <TableBody>
                 {filteredProjetos.map((p) => (
-                  <React.Fragment key={p._id}>
+                  <React.Fragment key={p.id}>
                     <TableRow className="hover:bg-secondary/20">
                       <TableCell>
                         <div className="space-y-2">
@@ -196,7 +196,7 @@ export default function ContraturnoProjetos() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => setExpandedId(expandedId === p._id ? null : p._id)}
+                            onClick={() => setExpandedId(expandedId === p.id ? null : p.id)}
                           >
                             <Eye className="w-4 h-4" />
                           </Button>
@@ -206,7 +206,7 @@ export default function ContraturnoProjetos() {
                         </div>
                       </TableCell>
                     </TableRow>
-                    {expandedId === p._id && (
+                    {expandedId === p.id && (
                       <TableRow>
                         <TableCell colSpan={4} className="bg-secondary p-4">
                           <div className="grid grid-cols-1 gap-2">
@@ -268,7 +268,7 @@ export default function ContraturnoProjetos() {
                 variant="primary"
                 className="bg-red-600 hover:bg-red-700"
                 disabled={deleteConfirmationText !== projetoToDelete.titulo}
-                onClick={() => deleteMutation.mutate(projetoToDelete._id)}
+                onClick={() => deleteMutation.mutate(projetoToDelete.id)}
               >
                 Excluir
               </Button>

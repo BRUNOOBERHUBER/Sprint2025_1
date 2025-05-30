@@ -46,11 +46,11 @@ export default function ContraturnoFormPage() {
   const {
     data: projetoData,
     isLoading: isLoadingProjeto,
-  } = useQuery(
-    ["contraturno", id],
-    () => getContraturno(id),
-    { enabled: !!id }
-  );
+  } = useQuery({
+    queryKey: ["contraturno", id],
+    queryFn: () => getContraturno(id),
+    enabled: !!id
+  });
 
   useEffect(() => {
     if (projetoData) {
@@ -107,7 +107,7 @@ export default function ContraturnoFormPage() {
               <select {...register("professor")} className="border rounded w-full p-2">
                 <option value="">Selecione responsável</option>
                 {colaboradores.map((c) => (
-                  <option key={c._id} value={c._id}>{c.nome}</option>
+                  <option key={c.id} value={c.id}>{c.nome}</option>
                 ))}
               </select>
             </div>
@@ -138,10 +138,10 @@ export default function ContraturnoFormPage() {
             <div className="border p-4 rounded">
               <label className="block font-medium mb-2">Alunos Inscritos</label>
               {alunos.map((a) => (
-                <div key={a._id} className="flex items-center mb-1">
+                <div key={a.id} className="flex items-center mb-1">
                   <input
                     type="checkbox"
-                    value={a._id}
+                    value={a.id}
                     {...register("alunosInscritos")}
                     className="mr-2"
                   />

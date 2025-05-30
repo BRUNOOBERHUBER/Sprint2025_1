@@ -18,7 +18,7 @@ def listar_contraturno():
     db = get_db()
     cursor = db[COLLECTION].find()
     docs = list(cursor)
-    return jsonify([contraturno_helper(d).dict() for d in docs])
+    return jsonify([contraturno_helper(d).model_dump() for d in docs])
 
 @router.route("/", methods=["POST"])
 @validar_token
@@ -26,9 +26,9 @@ def criar_contraturno():
     data = request.get_json()
     contraturno = ContraturnoCreate(**data)
     db = get_db()
-    result = db[COLLECTION].insert_one(contraturno.dict())
+    result = db[COLLECTION].insert_one(contraturno.model_dump())
     novo = db[COLLECTION].find_one({"_id": result.inserted_id})
-    return jsonify(contraturno_helper(novo).dict()), 201
+    return jsonify(contraturno_helper(novo).model_dump()), 201
 
 @router.route("/<contraturno_id>", methods=["GET"])
 @validar_token
@@ -37,7 +37,7 @@ def get_contraturno(contraturno_id: str):
     contraturno = db[COLLECTION].find_one({"_id": ObjectId(contraturno_id)})
     if not contraturno:
         return jsonify({"detail": "Contraturno não encontrado"}), 404
-    return jsonify(contraturno_helper(contraturno).dict())
+    return jsonify(contraturno_helper(contraturno).model_dump())
 
 @router.route("/<contraturno_id>", methods=["PUT"])
 @validar_token
@@ -47,12 +47,12 @@ def atualizar_contraturno(contraturno_id: str):
     db = get_db()
     result = db[COLLECTION].update_one(
         {"_id": ObjectId(contraturno_id)},
-        {"$set": contraturno.dict(exclude_unset=True)}
+        {"$set": contraturno.model_dump(exclude_unset=True)}
     )
     if result.matched_count == 0:
         return jsonify({"detail": "Contraturno não encontrado"}), 404
     atualizado = db[COLLECTION].find_one({"_id": ObjectId(contraturno_id)})
-    return jsonify(contraturno_helper(atualizado).dict())
+    return jsonify(contraturno_helper(atualizado).model_dump())
 
 @router.route("/<contraturno_id>", methods=["DELETE"])
 @validar_token
@@ -78,7 +78,7 @@ def inscrever_aluno(contraturno_id: str):
     if result.matched_count == 0:
         return jsonify({"detail": "Contraturno não encontrado"}), 404
     atualizado = db[COLLECTION].find_one({"_id": ObjectId(contraturno_id)})
-    return jsonify(contraturno_helper(atualizado).dict())
+    return jsonify(contraturno_helper(atualizado).model_dump())
 
 @router.route("/<contraturno_id>/inscricoes/<aluno_id>", methods=["DELETE"])
 @validar_token
@@ -91,4 +91,4 @@ def cancelar_inscricao(contraturno_id: str, aluno_id: str):
     if result.matched_count == 0:
         return jsonify({"detail": "Contraturno não encontrado"}), 404
     atualizado = db[COLLECTION].find_one({"_id": ObjectId(contraturno_id)})
-    return jsonify(contraturno_helper(atualizado).dict()) 
+    return jsonify(contraturno_helper(atualizado).model_dump()) 
