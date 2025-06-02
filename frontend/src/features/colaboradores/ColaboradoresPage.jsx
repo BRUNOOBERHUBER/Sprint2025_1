@@ -107,15 +107,14 @@ export default function ColaboradoresPage() {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id) => {
-    const col = colaboradores.find((c) => c._id === id);
+  const handleDelete = async (col) => {
     if (col) setColabToDelete(col);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (editing) {
-      updateMutation.mutate({ id: editing._id, updates: formData });
+      updateMutation.mutate({ id: editing.id, updates: formData });
     } else {
       createMutation.mutate(formData);
     }
@@ -165,7 +164,7 @@ export default function ColaboradoresPage() {
             </TableHeader>
             <TableBody>
               {filtered.map((col) => (
-                <TableRow key={col._id} className="hover:bg-secondary/20">
+                <TableRow key={col.id} className="hover:bg-secondary/20">
                   <TableCell>{col.nome}</TableCell>
                   <TableCell>
                     <Badge variant="outline" className="bg-accent text-primary-dk">
@@ -192,7 +191,7 @@ export default function ColaboradoresPage() {
                       <Button size="sm" variant="outline" onClick={() => openEdit(col)}>
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700" onClick={() => handleDelete(col._id)}>
+                      <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700" onClick={() => handleDelete(col)}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
@@ -287,7 +286,7 @@ export default function ColaboradoresPage() {
               <Button
                 variant="destructive"
                 disabled={deleteConfirmationText !== "EXCLUIR"}
-                onClick={() => deleteMutation.mutate(colabToDelete._id)}
+                onClick={() => deleteMutation.mutate(colabToDelete.id)}
               >
                 Excluir
               </Button>

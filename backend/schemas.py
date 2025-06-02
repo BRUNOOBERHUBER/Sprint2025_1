@@ -176,16 +176,31 @@ class ColaboradorDB(ColaboradorBase):
         orm_mode = True
 
 
-class FrequenciaCreate(BaseModel):
+class FrequenciaBase(BaseModel):
     ano: int
     totalAulas: int
     faltas: int
     percentPresenca: float
+    # criadoEm: datetime = Field(default_factory=datetime.utcnow) # Removido conforme PRD
 
 
-class FrequenciaDB(FrequenciaCreate):
+class FrequenciaCreate(FrequenciaBase):
+    alunoId: str # Adicionado para criação
+    criadoEm: datetime = Field(default_factory=datetime.utcnow) # Adicionado para criação
+
+
+class FrequenciaUpdate(BaseModel):
+    ano: Optional[int] = None
+    totalAulas: Optional[int] = None
+    faltas: Optional[int] = None
+    percentPresenca: Optional[float] = None
+    # Não permitir atualização de alunoId e criadoEm
+
+
+class FrequenciaDB(FrequenciaBase):
     id: str = Field(alias="_id")
     alunoId: str
+    criadoEm: datetime # Adicionado para exibição
 
     class Config:
         populate_by_name = True

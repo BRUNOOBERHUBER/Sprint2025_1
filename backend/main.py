@@ -14,13 +14,13 @@ CORS(
 # Registra as rotas com prefixo /api
 app.register_blueprint(auth.router, url_prefix="/api/auth")
 app.register_blueprint(alunos.router, url_prefix="/api/alunos")
-app.register_blueprint(boletins.router, url_prefix="/api/boletins")
+app.register_blueprint(boletins.router, url_prefix="/api")
 app.register_blueprint(colaboradores.router, url_prefix="/api/colaboradores")
 app.register_blueprint(contraturno.router, url_prefix="/api/contraturno")
 app.register_blueprint(dashboard.router, url_prefix="/api/dashboard")
-app.register_blueprint(frequencias.router, url_prefix="/api/frequencias")
-app.register_blueprint(saude.router, url_prefix="/api/saude")
-app.register_blueprint(atendimentos.router, url_prefix="/api/atendimentos")
+app.register_blueprint(frequencias.router, url_prefix="/api")
+app.register_blueprint(saude.router, url_prefix="/api")
+app.register_blueprint(atendimentos.router, url_prefix="/api")
 
 if __name__ == "__main__":
     app.run(debug=True, port=8000) 

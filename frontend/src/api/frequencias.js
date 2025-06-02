@@ -17,4 +17,9 @@ export async function getFrequencia(alunoId, frequenciaId) {
 
 export async function deletarFrequencia(alunoId, frequenciaId) {
   await api.delete(`/alunos/${alunoId}/frequencias/${frequenciaId}`);
+}
+
+export async function atualizarFrequencia(alunoId, frequenciaId, frequenciaData) {
+  const { data } = await api.put(`/alunos/${alunoId}/frequencias/${frequenciaId}`, frequenciaData);
+  return data;
 } 
