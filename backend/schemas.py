@@ -207,20 +207,59 @@ class FrequenciaDB(FrequenciaBase):
         orm_mode = True
 
 
-class SaudeCreate(BaseModel):
-    tipo: str
+# NOVOS SCHEMAS DE SAÚDE (conforme PRD v1.2a)
+
+class CondicaoSaude(BaseModel):
+    nome: str
+    status: str  # "confirmado", "controlada", "monitorada"
     descricao: str
-    dataLaudo: Optional[date] = None
+    dataDiagnostico: Optional[datetime] = None
+    profissionalSaude: Optional[str] = None
+    crm: Optional[str] = None
+
+class Medicacao(BaseModel):
+    nome: str
+    dosagem: Optional[str] = None
+    frequencia: Optional[str] = None
+    observacoes: Optional[str] = None
+    autorizadoPor: Optional[str] = None # Nome de quem autorizou (ex: responsável, médico)
+
+class ContatoEmergencia(BaseModel):
+    nome: str
+    telefone: str
+    relacao: Optional[str] = None # Ex: "Mãe", "Pai", "Avó"
+
+class SaudeBase(BaseModel):
+    condicoesSaude: List[CondicaoSaude] = Field(default_factory=list)
+    medicacoes: List[Medicacao] = Field(default_factory=list)
+    alergias: List[str] = Field(default_factory=list)
+    contatosEmergencia: List[ContatoEmergencia] = Field(default_factory=list)
+    documentosIds: List[str] = Field(default_factory=list)
+    # criadoEm e atualizadoEm serão gerenciados na criação/atualização
+
+class SaudeCreate(SaudeBase):
+    alunoId: str # Obrigatório na criação
+    criadoEm: datetime = Field(default_factory=datetime.utcnow)
+    atualizadoEm: datetime = Field(default_factory=datetime.utcnow)
+
+class SaudeUpdate(BaseModel): # Permite atualização parcial dos campos
+    condicoesSaude: Optional[List[CondicaoSaude]] = None
+    medicacoes: Optional[List[Medicacao]] = None
+    alergias: Optional[List[str]] = None
+    contatosEmergencia: Optional[List[ContatoEmergencia]] = None
     documentosIds: Optional[List[str]] = None
+    # atualizadoEm será definido na lógica da rota PUT
 
-
-class SaudeDB(SaudeCreate):
+class SaudeDB(SaudeBase):
     id: str = Field(alias="_id")
     alunoId: str
+    criadoEm: datetime
+    atualizadoEm: datetime
 
     class Config:
         populate_by_name = True
-        orm_mode = True
+        # orm_mode = True # orm_mode é para Pydantic v1. Para v2, use from_attributes = True
+        from_attributes = True
 
 
 class AtendimentoCreate(BaseModel):

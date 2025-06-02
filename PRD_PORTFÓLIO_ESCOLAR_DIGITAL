@@ -1,23 +1,23 @@
 =====================================================================
- PRD – PORTFÓLIO ESCOLAR DIGITAL • EMEF GONZAGUINHA • v1.2  (MVP+)
+ PRD – PORTFÓLIO ESCOLAR DIGITAL • EMEF GONZAGUINHA • v1.2a (MVP+)
 =====================================================================
 
 1. VISÃO GERAL
 ──────────────
-• Problema   : SGP armazena SÓ frequência + médias finais; não cobre saúde,
-               família, contraturno, encaminhamentos, etc.
-• Solução    : Web-app React (JS) + Flask (Python) + MongoDB Atlas.
-• Usuário    : Diretoria / Coordenação / Professores (login único, admin).
+• Problema : SGP armazena apenas frequência + médias finais; não registra
+             informações de saúde, família, contraturno, encaminhamentos etc.
+• Solução  : Web-app React (JS) + Flask (Python) + MongoDB Atlas.
+• Usuário  : Diretoria / Coordenação / Professores (login único, admin).
 
 2. OBJETIVOS & MÉTRICAS
 ───────────────────────
-| Objetivo                                          | Indicador-Meta          |
-|---------------------------------------------------|-------------------------|
-| Centralizar docs dos alunos monitorados           | ≥ 95 % em 30 dias       |
-| Busca de info para reuniões                       | 20 min → < 3 min        |
-| Lançamentos bimestrais sem planilhas              | 4 ciclos/semestre       |
-| Exportar portfólio PDF + JSON em 1 clique         | 100 % OK               |
-| Dash analítico (freq./notas/intervenções)         | 3 gráficos funcionais   |
+| Objetivo                                          | Indicador-Meta         |
+|---------------------------------------------------|------------------------|
+| Centralizar docs dos alunos monitorados           | ≥ 95 % em 30 dias      |
+| Busca de info p/ reuniões                         | 20 min → < 3 min       |
+| Lançamentos bimestrais sem planilhas              | 4 ciclos/semestre      |
+| Exportar portfólio PDF + JSON em 1 clique         | 100 % OK              |
+| Dash analítico (freq./notas/intervenções)         | ≥ 3 gráficos ativos    |
 
 3. USER STORIES (prioridade MVP+)
 ────────────────────────────────
@@ -34,7 +34,7 @@ US-10 Catalogar encaminhamentos a redes de proteção.
 US-11 Cadastrar colaboradores (cargo, contato).  
 US-12 Visualizar dashboard analítico.  
 
-★  BÔNUS  
+★ BÔNUS  
 US-B1 Notificar responsáveis (e-mail/WhatsApp).  
 US-B2 Multiusuário + permissões.
 
@@ -43,8 +43,8 @@ US-B2 Multiusuário + permissões.
 primary-dk #063970 | primary #1e81b0 | accent #76b5c5  
 secondary #abdbe3  | background #eeeee4  
 
-5. MODELO DE DADOS – MongoDB  (DB: EMEF)
-─────────────────────────────────────────
+5. MODELO DE DADOS – MongoDB  (DB: **EMEF**)
+────────────────────────────────────────────
 LEG.: (*) obrigatório | (-) opcional  
 
 ╭────────────────────────────────────────────────────────────────────╮
@@ -67,19 +67,29 @@ LEG.: (*) obrigatório | (-) opcional
 │ mediaGeral(calc), criadoEm*       │  │ criadoEm*                         │
 ╰───────────────────────────────────╯  ╰───────────────────────────────────╯
 
-╭───────────────────────────────────╮  ╭───────────────────────────────────╮
-│ 5.5  saudeDeficiencias            │  │ 5.6  atendimentos                │
-│ alunoId*, tipo*, descricao*,      │  │ alunoId*, titulo*, data*, motivo*│
-│ dataLaudo-, documentosIds-[],     │  │ resultado*, responsavelColabId*,  │
-│ criadoEm*                         │  │ documentoId-, criadoEm*           │
-╰───────────────────────────────────╯  ╰───────────────────────────────────╯
+╭────────────────────────────────────────────────────────────────────╮
+│ 5.5  saude (NOVA ESTRUTURA DETALHADA)                             │
+│ alunoId*,                                                         │
+│ condicoesSaude* [                                                 │
+│   { nome*, status*(confirmado|controlada|monitorada),             │
+│     descricao*, dataDiagnostico-, profissionalSaude-, crm- }      │
+│ ],                                                                │
+│ medicacoes- [                                                     │
+│   { nome*, dosagem-, frequencia-, observacoes-, autorizadoPor- }  │
+│ ],                                                                │
+│ alergias- [ "Amendoim", "Pólen", … ],                             │
+│ contatosEmergencia- [                                             │
+│   { nome*, telefone*, relacao- }                                  │
+│ ],                                                                │
+│ documentosIds-[], criadoEm*, atualizadoEm*                        │
+╰────────────────────────────────────────────────────────────────────╯
 
-╭───────────────────────────────────╮
-│ 5.7  projetosContraturno          │
-│ titulo*, descricao*, dataInicio*, │
-│ dataFim-, responsavelColabId*,    │
-│ alunosInscritos*[], criadoEm*     │
-╰───────────────────────────────────╯
+╭───────────────────────────────────╮  ╭───────────────────────────────────╮
+│ 5.6  atendimentos                │  │ 5.7  projetosContraturno          │
+│ alunoId*, titulo*, data*, motivo*│  │ titulo*, descricao*, dataInicio*, │
+│ resultado*, responsavelColabId*, │  │ dataFim-, responsavelColabId*,    │
+│ documentoId-, criadoEm*          │  │ alunosInscritos*[], criadoEm*     │
+╰───────────────────────────────────╯  ╰───────────────────────────────────╯
 
 ╭───────────────────────────────────╮  ╭───────────────────────────────────╮
 │ 5.8  atividades                  │  │ 5.9  hipoteseEscrita             │
@@ -96,7 +106,7 @@ LEG.: (*) obrigatório | (-) opcional
 ╰───────────────────────────────────╯  ╰───────────────────────────────────╯
 
 ╭───────────────────────────────────╮
-│ 5.12 encaminhamentos (*NOVO*)     │
+│ 5.12 encaminhamentos             │
 │ alunoId*, data*, destino*, motivo*,│
 │ status*, resultado-, followUpDate-,│
 │ documentoId-, criadoEm*           │
@@ -105,7 +115,7 @@ LEG.: (*) obrigatório | (-) opcional
 ╭───────────────────────────────────╮  ╭───────────────────────────────────╮
 │ 5.13 relacionamentoColegas       │  │ 5.14 avaliacoesExternas           │
 │ alunoId*, data*, observacao*,     │  │ alunoId*, nome*, data*,           │
-│ classificacao*, criadoEm*         │  │ resultado*, documentoId-,         │
+│ classificacao*, criadoEm*         │  │ resultado*, documentId-,          │
 ╰───────────────────────────────────╯  ╰───────────────────────────────────╯
 
 ╭──────────────────────────╮
@@ -129,7 +139,7 @@ ALUNOS
 SUB-RECURSOS (CRUD)
   /api/alunos/<id>/boletins
   /api/alunos/<id>/frequencias
-  /api/alunos/<id>/saude
+  /api/alunos/<id>/saude                     ⇦ inclui cond., medicação, etc.
   /api/alunos/<id>/atendimentos
   /api/alunos/<id>/encaminhamentos
   /api/alunos/<id>/atividades
@@ -149,49 +159,51 @@ UPLOAD
   POST  /api/upload      – GridFS
 
 EXPORT & DASHBOARD
-  GET   /api/alunos/<id>/export            → JSON + PDF (WeasyPrint)
-  GET   /api/dashboard/stats               → dados para gráficos
+  GET   /api/alunos/<id>/export           → JSON + PDF (WeasyPrint)
+  GET   /api/dashboard/stats              → indicadores p/ gráficos
 
-★  BÔNUS
-  POST  /api/notificar/<alunoId>           → e-mail/WhatsApp
+★ BÔNUS
+  POST  /api/notificar/<alunoId>          → e-mail/WhatsApp
 
 7. RELATÓRIO PDF (WeasyPrint)
 ─────────────────────────────
-• Template HTML/CSS institucional.  
-• Seções: Dados Gerais | Gráficos (freq./notas) | Atendimentos |  
-  Encaminhamentos | Contraturno.  
-• Gerado server-side; endpoint `/export?format=pdf`.
+• Template institucional: logo EMEF, cabeçalho aluno.  
+• Seções: Dados Gerais | Saúde (condições, medicações, alergias, emergências) |
+  Boletim | Frequência | Atendimentos | Encaminhamentos | Contraturno.  
+• Endpoint `/export?format=pdf`.
 
 8. DASHBOARD ANALÍTICO
 ──────────────────────
-• Gráfico 1: Frequência (%) por bimestre.  
-• Gráfico 2: Média de notas vs. número de intervenções.  
-• Gráfico 3: Distribuição de tags de atenção.  
-• React-chartjs-2; dados via `/dashboard/stats`.
+• Gráfico 1 Frequência (%) por bimestre.  
+• Gráfico 2 Média de notas × nº intervenções.  
+• Gráfico 3 Distribuição de tags de atenção.  
+• Biblioteca React-chartjs-2; dados via `/dashboard/stats`.
 
-9. FLUXO DE TELAS (front-end)
-─────────────────────────────
-LOGIN → DASHBOARD (cards + gráficos) → ALUNOS → Detalhe Tabs  
-→ Contraturno (com responsável) → Atendimentos (responsável)  
-→ Encaminhamentos → Colaboradores (CRUD) → Export PDF/JSON.
+9. FLUXO DE TELAS
+─────────────────
+LOGIN → DASHBOARD → ALUNOS → Detalhe Tabs  
+  → **Saúde** (UI baseado no mock: cartões condição, coluna medicação/alergia/
+    emergência) → Contraturno → Atendimentos → Encaminhamentos  
+  → Colaboradores → Export PDF/JSON.
 
 10. ROADMAP (12 semanas)
 ────────────────────────
-S1  Setup + Login + CRUD Colaboradores & Alunos  
+S1  Setup + Login + Colaboradores & Alunos CRUD  
 S2  Boletim + Frequência + Upload  
-S3  Atendimentos (com responsável) + Encaminhamentos  
-S4  Contraturno (com responsável) + Dashboard API  
-S5  Relatório PDF + Front gráficos  
-S6  Testes + Hardening + Optional bonus se tempo
+S3  Saude módulo completo + Atendimentos + Encaminhamentos  
+S4  Contraturno + Dashboard API + Front gráficos  
+S5  Relatório PDF + E2E Tests  
+S6  Hardening + Buffers + BÔNUS se tempo
 
 11. RISCOS & MITIGAÇÕES
 ───────────────────────
 | Risco                                   | Mitigação                       |
 |-----------------------------------------|---------------------------------|
-| Escopo extra (PDF + Dashboard)          | Buffer sprint 5-6; priorizar    |
-| WeasyPrint dependências (libffi/pango)  | Dockerizar imagem do backend    |
-| Internet instável na escola             | Considerar cache/PWA em fase 2  |
+| Complexidade módulo Saúde               | Prototipar UI cedo (Sprint-3).  |
+| WeasyPrint dependências                 | Usar contêiner com libs pango.  |
+| Escopo bônus invadir MVP                | Reservar tempo só em S6.        |
+| Internet instável                       | Possível cache/PWA em fase 2.   |
 
 =====================================================================
-                                PRD
+                              PRD v1.2a
 =====================================================================
