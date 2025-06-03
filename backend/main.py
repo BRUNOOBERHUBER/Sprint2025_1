@@ -6,7 +6,7 @@ app = Flask(__name__)
 app.url_map.strict_slashes = False
 CORS(
     app,
-    resources={r"/api/*": {"origins": "http://localhost:5173"}},
+    resources={r"/api/*": {"origins": ["http://localhost:5173", "http://localhost:5174"]}},
     allow_headers=["*"],
     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
 )

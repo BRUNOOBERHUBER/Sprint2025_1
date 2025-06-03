@@ -36,12 +36,15 @@ def signup():
 @router.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
+    print(f"[DEBUG] Dados recebidos no login: {data}")
     payload = LoginRequest(**data)
-    db = get_db()
+    print(f"[DEBUG] Payload após validação: user={payload.user}, passw={payload.passw}")
+    print(f"[DEBUG] Comparando com: USER_FIXO={USER_FIXO}, PASS_FIXO={PASS_FIXO}")
     
-    user_doc = db[COLLECTION].find_one({"username": payload.user})
-    if not user_doc:
-        return jsonify({"detail": "Usuário não encontrado"}), 401
-    if user_doc.get("password") != payload.passw:
-        return jsonify({"detail": "Senha inválida"}), 401
+    # Usar credenciais fixas ao invés do banco
+    if payload.user != USER_FIXO or payload.passw != PASS_FIXO:
+        print(f"[DEBUG] Credenciais inválidas: {payload.user} != {USER_FIXO} ou {payload.passw} != {PASS_FIXO}")
+        return jsonify({"detail": "Credenciais inválidas"}), 401
+    
+    print("[DEBUG] Login bem-sucedido!")
     return jsonify(TokenResponse(token=TOKEN_FIXO).dict()) 
