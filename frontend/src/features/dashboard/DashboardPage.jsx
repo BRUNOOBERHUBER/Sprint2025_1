@@ -84,9 +84,6 @@ export default function DashboardPage() {
           <Activity className="w-8 h-8 text-primary-dark" />
           <h1 className="text-3xl font-bold text-primary-dark">Dashboard</h1>
         </div>
-        <Button variant="outline" size="sm">
-          <Calendar className="mr-2 h-4 w-4" /> Este mês
-        </Button>
       </div>
 
       {/* Cards de estatísticas */}
