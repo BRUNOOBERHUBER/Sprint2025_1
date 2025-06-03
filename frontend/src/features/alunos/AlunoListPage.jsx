@@ -7,7 +7,7 @@ import { Button } from "../../components/ui/button";
 import { Badge } from "../../components/ui/badge";
 import { Input } from "../../components/ui/input";
 import { Table, TableHeader, TableHead, TableBody, TableRow, TableCell } from "../../components/ui/table";
-import { User, Plus, Search, Eye, Edit, GraduationCap, Users, AlertTriangle, Star } from "lucide-react";
+import { User, Plus, Search, Eye, Edit, GraduationCap, Users, AlertTriangle, Star, Trash2 } from "lucide-react";
 
 export default function AlunoListPage() {
   const { data: students = [], isLoading } = useQuery({ queryKey: ["alunos"], queryFn: listarAlunos });
@@ -210,7 +210,7 @@ export default function AlunoListPage() {
                           <Link to={`/alunos/${student.id}`} state={{ edit: true }}>
                             <Edit className="w-4 h-4 text-gray-600 hover:text-gray-800" />
                           </Link>
-                          <AlertTriangle
+                          <Trash2
                             className="w-4 h-4 text-gray-600 cursor-pointer hover:text-gray-800"
                             onClick={() => setStudentToDelete(student)}
                           />
