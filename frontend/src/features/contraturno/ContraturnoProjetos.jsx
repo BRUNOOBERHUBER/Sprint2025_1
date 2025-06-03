@@ -136,7 +136,7 @@ export default function ContraturnoProjetos() {
       {/* Search */}
       <Card className="border-2 border-secondary">
         <CardContent className="p-4 relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          <Search className="absolute left-7 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <Input
             placeholder="Buscar por título, descrição, professor ou categoria..."
             value={searchTerm}

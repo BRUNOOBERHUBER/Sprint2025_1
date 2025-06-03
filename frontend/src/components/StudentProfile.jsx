@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -35,6 +35,8 @@ export const StudentProfile = ({ student, onEdit }) => {
   const dados = student.dadosPessoais ?? {
     enderecoCompleto: student.endereco || "",
   };
+
+  const [showWhatsappPopup, setShowWhatsappPopup] = useState(false);
 
   return (
     <div className="space-y-6">
@@ -173,13 +175,61 @@ export const StudentProfile = ({ student, onEdit }) => {
         <Button className="bg-primary hover:bg-primary/90 text-white">
           <FileText className="w-4 h-4 mr-2" /> Gerar Relatório
         </Button>
-        <Button variant="outline">
+        <Button variant="outline" onClick={() => setShowWhatsappPopup(true)}>
           <Mail className="w-4 h-4 mr-2" /> Enviar Comunicado
         </Button>
         <Button variant="outline">
           <GraduationCap className="w-4 h-4 mr-2" /> Histórico Escolar
         </Button>
       </div>
+
+      {showWhatsappPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded shadow-lg w-full max-w-sm">
+            <h3 className="text-xl font-bold mb-4">Escolha um Responsável</h3>
+            <div className="space-y-3">
+              {student.contatosResponsaveis && student.contatosResponsaveis.length > 0 ? (
+                student.contatosResponsaveis.map((contato, index) => (
+                  (contato.fone || contato.email) ? (
+                    <div key={index} className="border-b pb-2 last:border-b-0">
+                      <span className="font-semibold">{contato.nome}</span>
+                      <div className="flex items-center space-x-3 mt-1">
+                        {contato.fone ? (
+                          <a
+                            href={`https://wa.me/${contato.fone.replace(/[^0-9]/g, '')}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-green-600 hover:text-green-800 flex items-center"
+                            onClick={() => setShowWhatsappPopup(false)}
+                          >
+                            <Phone className="w-4 h-4 mr-1" /> WhatsApp
+                          </a>
+                        ) : null}
+                        {contato.email ? (
+                          <a
+                            href={`mailto:${contato.email}`}
+                            className="text-blue-600 hover:text-blue-800 flex items-center"
+                            onClick={() => setShowWhatsappPopup(false)}
+                          >
+                            <Mail className="w-4 h-4 mr-1" /> E-mail
+                          </a>
+                        ) : null}
+                      </div>
+                    </div>
+                  ) : null
+                ))
+              ) : (
+                <p>Nenhum contato de responsável com telefone ou e-mail encontrado.</p>
+              )}
+            </div>
+            <div className="mt-6 flex justify-end">
+              <Button variant="outline" onClick={() => setShowWhatsappPopup(false)}>
+                Fechar
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }; 
