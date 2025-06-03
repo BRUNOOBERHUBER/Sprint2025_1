@@ -1,13 +1,10 @@
-import { useParams, useNavigate, useLocation, Routes, Route, Navigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation, Routes, Route } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getAluno } from "../../api/alunos";
 import DadosGeraisTab from "./tabs/DadosGeraisTab";
 import BoletinsTab from "./tabs/BoletinsTab";
 import FrequenciaTab from "./tabs/FrequenciaTab";
 import ContraturnoTab from "./tabs/ContraturnoTab";
-// Stubs para outras abas
-import PlaceholderTab from "./tabs/PlaceholderTab";
-import StudentNavigation from "../../components/StudentNavigation";
 import SaudeTab from "./tabs/SaudeTab";
 import AtendimentosTab from "./tabs/AtendimentosTab";
 import { Card, CardHeader, CardTitle, CardContent } from "../../components/ui/card";

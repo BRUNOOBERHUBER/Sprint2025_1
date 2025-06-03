@@ -128,6 +128,8 @@ export default function StudentPortalDemo() {
             </CardContent>
           </Card>
         );
+      default:
+        return null;
     }
   };
 
